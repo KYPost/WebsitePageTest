@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"></meta>
+        <title>HidedPage</title>
+    </head>
+    <body>
+        <script>
+            // get cookie data & write data
+            var data = GetCookie("Collection");
+            document.write("Stemp01 = " + data.stemp01 + ";<br>");
+            document.write("Stemp02 = " + data.stemp02 + ";<br>");
+            document.write("Stemp03 = " + data.stemp03 + ";<br><br>");
+            
+            // get url parameter
+            var stemp = GetURLParameter("Stemp");
+            document.write("URL Stemp = " + stemp + ";<br><br>");
+
+            // update data
+            switch(stemp)
+            {
+                case "1":
+                    data.stemp01 = true;
+                    break;
+                case "2":
+                    data.stemp02 = true;
+                    break;
+                case "3":
+                    data.stemp03 = true;
+                    break;
+            }
+            document.write("Stemp01 = " + data.stemp01 + ";<br>");
+            document.write("Stemp02 = " + data.stemp02 + ";<br>");
+            document.write("Stemp03 = " + data.stemp03 + ";<br><br>");
+
+            // data to Json
+            var dataString = JSON.stringify(data);
+            document.write("Json Data = " + dataString + "<br><br>");
+
+            // set cookie
+            SetCookie("Collection", dataString);
+
+            // load collection page
+            window.location.replace("https://kypost.github.io/WebsitePageTest/CollectionPage/");
+            
+            function newCollectionData()
+            {
+                var data = {
+                    stemp01: false,
+                    stemp02: false,
+                    stemp03: false,
+                }
+                return data;
+            }
+            
+            function GetCookie(key)
+            {             
+                var data = newCollectionData();   
+                var decodedCookie = decodeURIComponent(document.cookie);
+                document.write("Cookie = " + decodedCookie + "<br><br>");
+                var cookies = decodedCookie.split('; ');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].split("=");
+                    if(cookie[0] = key && cookie[1] != null)
+                    {
+                        var cookieData = JSON.parse(cookie[1]);
+                        data.stemp01 = cookieData.stemp01;
+                        data.stemp02 = cookieData.stemp02;
+                        data.stemp03 = cookieData.stemp03;
+                    }                    
+                }
+                return data;
+            }
+            
+            function GetURLParameter(key)
+            {
+                var url = document.URL;
+                var index = url.indexOf("?");
+                if (index != -1)
+                {
+                    var decodedParameter = url.split("?")[1];
+                    var parameters = decodedParameter.split("&");
+                    for(var i = 0; i < parameters.length; i++)
+                    {
+                        var parameter = parameters[i].split("=");
+                        if(parameter[0] = key)
+                        {
+                            return parameter[1];
+                        }
+                    }
+                }
+                return "Null";                
+            }
+            
+            function SetCookie(key, value)
+            {
+                var cookie = key + "=" + value;
+                var date = new Date();
+                date.setTime(date.getTime() + (3 * 24 * 60 * 60 * 1000));
+                var expires = "expires=" + date.toUTCString();
+                document.cookie = cookie + "; " + expires + "; path=/";
+            }
+        </script>
+    </body>
+</html>
